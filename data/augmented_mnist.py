@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 
 def n_random_crop(img, height, width, n):
-	"""
-	This method takes a image, crops randomly n crops of size height x width and returns the n crops.
+    """
+    This method takes a image, crops randomly n crops of size height x width and returns the n crops.
 	
     Parameters
     ----------
