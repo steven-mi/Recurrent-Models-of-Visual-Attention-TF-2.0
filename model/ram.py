@@ -63,7 +63,7 @@ class RecurrentAttentionModel(Model):
         self.loc = None
         self.state = None
     
-    def call(self, X_PH):
+    def call(self, x):
         """
         This method is the output of the core network - a Recurrent Neural Network that maintains an 
         internal state that integrates information extracted from the history of past observations. 
@@ -75,8 +75,8 @@ class RecurrentAttentionModel(Model):
         
         Parameters
         ----------
-        X_PH: tf.Placeholder
-            This is the placeholder in which the images are fed into. It should have the shape of 
+        x: tf.Variable
+            This is a variable in which the images are fed into. It should have the shape of 
             [batch_size, image_height, image_width, image_channels]
             
         Returns
@@ -86,9 +86,9 @@ class RecurrentAttentionModel(Model):
         """
         # we start with initializing the location, state, glimpses if they are None
         if self.loc is None:
-            self.loc = tf.random.uniform((X_PH.shape[0], 2), minval=-1, maxval=1)
-            self.state = self.cell.get_initial_state(batch_size=X_PH.shape[0], dtype=tf.float32)
-        glimpse = self.glimpse_network(X_PH, self.loc)
+            self.loc = tf.random.uniform((x.shape[0], 2), minval=-1, maxval=1)
+            self.state = self.cell.get_initial_state(batch_size=x.shape[0], dtype=tf.float32)
+        glimpse = self.glimpse_network(x, self.loc)
 
         # calculating the RNN outputs
         self.locs, self.loc_means, rnn_outputs = [], [], []
@@ -103,14 +103,14 @@ class RecurrentAttentionModel(Model):
             self.loc_means.append(loc_mean)
 
             # get next glimpse
-            glimpse = self.glimpse_network(X_PH, self.loc)
+            glimpse = self.glimpse_network(x, self.loc)
 
         # convert list to one big tensor
         self.locs = tf.concat(axis=0, values=self.locs)
-        self.locs = tf.reshape(self.locs, (self.time_steps, X_PH.shape[0], 2))
+        self.locs = tf.reshape(self.locs, (self.time_steps, x.shape[0], 2))
         self.locs = tf.transpose(self.locs, [1, 0, 2])
         self.loc_means = tf.concat(axis=0, values=self.loc_means)
-        self.loc_means = tf.reshape(self.loc_means, (self.time_steps, X_PH.shape[0], 2))
+        self.loc_means = tf.reshape(self.loc_means, (self.time_steps, x.shape[0], 2))
         self.loc_means = tf.transpose(self.loc_means, [1, 0, 2])
 
         # calculate the baseline output for each rnn out
@@ -122,7 +122,7 @@ class RecurrentAttentionModel(Model):
         return self.action_network(rnn_outputs[-1])
     
     @tf.function
-    def predict(self, logits, Y_PH):
+    def predict(self, logits, labels):
         """
         This method returns the accuracy and the predicted class of a given logits
         
@@ -130,8 +130,8 @@ class RecurrentAttentionModel(Model):
         ----------
         logits: tf.Tensor of type tf.float32
             The output of the RAM, which you can get by calling the call function
-        Y_PH: tf.Placeholder
-            This is the placeholder in which the labels are fed into. It should have the shape of 
+        labels: tf.Variable
+            This is the variable in which the labels are fed into. It should have the shape of 
             [batch_size, num_classes]
         
         Returns
@@ -139,14 +139,13 @@ class RecurrentAttentionModel(Model):
         accuracy, predictions: float32, tf.Tensor of type int
             A tuple with the first item beeing the accuracy and the second item beeing the predicted classes
         """
-        #logits = self.get_action_network_output(X_PH)
         prediction = tf.nn.softmax(logits)
-        accuracy = tf.cast(tf.equal(tf.argmax(prediction, 1), tf.argmax(Y_PH, 1)), tf.float32)
+        accuracy = tf.cast(tf.equal(tf.argmax(prediction, 1), tf.argmax(labels, 1)), tf.float32)
         accuracy = tf.reduce_mean(accuracy)
         return accuracy, tf.argmax(prediction, 1), self.locs
     
     @tf.function
-    def hybrid_loss(self, logits, Y_PH):
+    def hybrid_loss(self, logits, labels):
         """
         This method returns the hybrid loss function of the Recurrent Attention Model.
         Note: The Location Network is the only one which is trained with the REINFORCE algorithm. Everything else is 
@@ -156,8 +155,8 @@ class RecurrentAttentionModel(Model):
         ----------
         logits: tf.Tensor of type tf.float32
             The output of the RAM, which you can get by calling the call function
-        Y_PH: tf.Placeholder
-            This is the placeholder in which the labels are fed into. It should have the shape of 
+        labels: tf.Variable
+            This is the variable in which the labels are fed into. It should have the shape of 
             [batch_size, num_classes]
         
         Returns
@@ -168,13 +167,12 @@ class RecurrentAttentionModel(Model):
             reward - the reward of the whole RAM
             baseline_mse - the mean squared error of the baseline
         """
-        #logits = self.get_action_network_output(X_PH)
         # classification loss - we only need to classify at the last step of our RNN
-        classification_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y_PH, logits=logits))
+        classification_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits))
         
         # RL reward
         prediction = tf.nn.softmax(logits)
-        reward = tf.cast(tf.equal(tf.argmax(prediction, 1), tf.argmax(Y_PH, 1)), tf.float32)
+        reward = tf.cast(tf.equal(tf.argmax(prediction, 1), tf.argmax(labels, 1)), tf.float32)
         
         # baseline mse 
         rewards = tf.expand_dims(reward, 1)             # [batch_sz, 1]
