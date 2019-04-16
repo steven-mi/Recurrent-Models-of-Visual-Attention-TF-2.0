@@ -30,4 +30,4 @@ In order to run this code is it **recommended** to use the docker container of t
 TODO and will be added after implementing Bayessian Hyperparameter Optimization
 
 ## Some Words
-The paper Recurrent Models of Visual Attention is 5 years and received since then a lot of modification. I think the REINFORCE algorithm still a interesting "cheat" or "trick" to optimize for non differentiable variables which is why I tried to implement it. This implementation adds a very object oriented stile, thus every network can be swapped out - same as layers, loss functions, ....
+The paper Recurrent Models of Visual Attention is 5 years and received since then a lot of modification. I think the REINFORCE algorithm still a interesting "cheat" or "trick" to optimize for non differentiable variables which is why I tried to implement and understand it. This implementation also has a very object oriented style, thus every class/module can be swapped out easily.
