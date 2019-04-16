@@ -1,6 +1,8 @@
 # Recurrent-Models-of-Visual-Attention-TF-2.0
-This repository contains the a modified Recurrent Attention Model which was described in the Paper Recurrent Visual Attention. 
-In order to run this code is it **recommended** to use the docker container of tensorflow 2.0a - TAG: `2.0.0a0-gpu-py3-jupyter` or `nightly-gpu-jupyter`.
+This repository contains the a modified Recurrent Attention Model which was described in the Paper Recurrent Models of Visual Attention. 
+In order to run this code is it **recommended** to use the docker container of tensorflow 2.0a
+- `tensorflow/tensorflow:2.0.0a0-gpu-py3-jupyter`
+- `tensorflow/tensorflow:nightly-gpu-jupyter`
 
 ## Requirements
 - [ray](http://ray.readthedocs.io)
@@ -26,3 +28,6 @@ In order to run this code is it **recommended** to use the docker container of t
 
 ## Results
 TODO and will be added after implementing Bayessian Hyperparameter Optimization
+
+## Some Words
+The paper Recurrent Models of Visual Attention is 5 years and received since then a lot of modification. I think the REINFORCE algorithm still a interesting "cheat" or "trick" to optimize for non differentiable variables which is why I tried to implement it. This implementation adds a very object oriented stile, thus every network can be swapped out - same as layers, loss functions, ....
