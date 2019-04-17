@@ -6,6 +6,11 @@ In order to run this code is it **recommended** to use the docker container of t
 
 You also need to install `tfp-nightly-gpu` instead of the normal `tensorflow-probability` package because `tensorflow-probability` doesn't work with `tensorflow-2.0.0a0`.
 
+```bash
+pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly
+pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly-gpu
+```
+
 ## Requirements
 - [ray](http://ray.readthedocs.io)
 - [tensorflow 2.0](https://www.tensorflow.org/versions/r2.0/api_docs/python/tf)
