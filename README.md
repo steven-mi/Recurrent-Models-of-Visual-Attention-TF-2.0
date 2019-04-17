@@ -3,6 +3,7 @@ This repository contains the a modified Recurrent Attention Model which was desc
 In order to run this code is it **recommended** to use the docker container of tensorflow 2.0a
 - `tensorflow/tensorflow:2.0.0a0-gpu-py3-jupyter`
 - `tensorflow/tensorflow:nightly-gpu-jupyter`
+You also need to install `tfp-nightly-gpu` instead of the normal `tensorflow-probability` package because `tensorflow-probability` doesn't work with `tensorflow-2.0.0a0`.
 
 ## Requirements
 - [ray](http://ray.readthedocs.io)
