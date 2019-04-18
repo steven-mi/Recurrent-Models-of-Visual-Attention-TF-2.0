@@ -18,7 +18,7 @@ pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly
 - instead of Dense layers/Fully Conneted layers, Convolution layers were used
 - in addition to the baseline model, batch norm was added to reduce variance
 - instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used
-- instead of random search (currently implemented), Bayessian Hyperparameter Optimization should be used to train the network
+- instead of random search, Bayessian Hyperparameter Optimization should be used to tune the hyperparameter of the network
 
 ## Project Structure
 - `data/` contains scripts for loading data e.g. bach dataset loader, mnist, ...
@@ -29,7 +29,7 @@ pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly
 - `./` contains jupyter notebooks about how to use the dataloader, how to use the visualization scripts and how to train the model
 
 ## Results
-TODO and will be added after implementing Bayessian Hyperparameter Optimization
+Coming soon
 
 ## Some Words
 The paper Recurrent Models of Visual Attention is 5 years and received since then a lot of modification. I think the REINFORCE algorithm still a interesting "cheat" or "trick" to optimize for non differentiable variables which is why I tried to implement and understand it. This implementation also has a very object oriented style, thus every class/module can be swapped out easily.
