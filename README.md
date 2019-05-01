@@ -18,7 +18,7 @@ pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly
 - instead of Dense layers/Fully Conneted layers, Convolution layers were used
 - in addition to the baseline model, batch norm was added to reduce variance
 - instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used
-- instead of random search, Bayessian Hyperparameter Optimization should be used to tune the hyperparameter of the network
+- instead of random search, Bayessian Hyperparameter Optimization was used to tune the hyperparameter of the network (std and initial learning rate)
 
 ## Project Structure
 - `data/` contains scripts for loading data e.g. bach dataset loader, mnist, ...
