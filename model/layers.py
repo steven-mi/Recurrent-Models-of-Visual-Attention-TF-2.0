@@ -42,11 +42,11 @@ def get_bias(shape, name, trainable=True):
     """
     return tf.Variable(tf.zeros(shape), trainable=trainable, name=name+'_b', dtype=tf.float32)
 
-class ConvLayer():
+class ConvLayer(tf.keras.layers.Layer):
     """
-    TODO
+    A Convolution layer 
     """
-    def __init__(self, n_filter, filter_size, input_channel, name):      
+    def __init__(self, n_filter, filter_size, input_channel, name, batch_norm=True):      
         """
         This method initializes the convolution layer
             
@@ -61,27 +61,33 @@ class ConvLayer():
         name: String
             The name of the convolution layer
         """  
-        self.weights = get_weight([filter_size, filter_size, input_channel, n_filter], name)
-        self.biases = get_bias([n_filter], name)
-        self.name = name
+        super(ConvLayer, self).__init__()
+        self.weight = get_weight([filter_size, filter_size, input_channel, n_filter], name)
+        self.bias = get_bias([n_filter], name)
+        self.n = name
         
-        self.batch_norm = tf.keras.layers.BatchNormalization(name=self.name + "_batch_norm")
+        if batch_norm:
+            self.batch_norm = tf.keras.layers.BatchNormalization(name=self.n + "_batch_norm")
+        else:
+            self.batch_norm = None
     
     def __call__(self, x):
         """
-        TODO 
+        Calculates the output of the convolution layer. 
 
         Parameters
         ----------
         x: np.array
-            TODO
+            input images
         
         Returns
         ----------
-        TODO    
+        out: tf.Tensor
+            the output tensor. The convolution layer is followed by a batch_norm layer and a relu layer.
         """
-        conv = tf.nn.conv2d(x, self.weights, [1, 1, 1, 1], padding='VALID', data_format="NHWC", name=self.name + "_convolution")
-        bias = tf.nn.bias_add(conv, self.biases, name=self.name + "_add_bias")
-        batch_norm = self.batch_norm(bias)
-        relu = tf.nn.relu(batch_norm, name=self.name+"_relu")
+        conv = tf.nn.conv2d(x, self.weight, [1, 1, 1, 1], padding='VALID', data_format="NHWC", name=self.n + "_convolution")
+        add_bias = tf.nn.bias_add(conv, self.bias, name=self.n + "_add_bias")
+        if self.batch_norm:
+            add_bias = self.batch_norm(add_bias)
+        relu = tf.nn.relu(add_bias, name=self.n + "_relu")
         return relu
