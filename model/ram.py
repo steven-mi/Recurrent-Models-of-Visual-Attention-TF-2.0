@@ -20,7 +20,7 @@ class RecurrentAttentionModel(Model):
     over time to build up an internal representation of the scene, guiding future eye movements
     and decision making.
     """
-    def __init__(self, time_steps, n_glimpses, glimpse_size, num_classes, max_gradient_norm = 5.0, std = 0.22):
+    def __init__(self, time_steps, n_glimpses, glimpse_size, num_classes, input_channels=1, max_gradient_norm = 5.0, std = 0.22):
         """
         Parameters
         ----------
@@ -30,10 +30,12 @@ class RecurrentAttentionModel(Model):
             This decides the amount of glimpses the Glimpse Network will use
         glimpse_size : int
             This decides the size of the glimpses which the Glimpse Network uses
-           
+        
         num_classes: int
             How many classes in the dataset are
-            
+        
+        input_channels: int (default 1)
+            The amount of channels in the input image
         max_gradient_norm: float
             How much the gradient is clipped
         std: float
@@ -50,7 +52,7 @@ class RecurrentAttentionModel(Model):
         self.std = std
         
         # initialize glimpse network
-        self.glimpse_network = GlimpseNetwork(n_glimpses=self.n_glimpses, glimpse_size=self.glimpse_size)
+        self.glimpse_network = GlimpseNetwork(n_glimpses=self.n_glimpses, glimpse_size=self.glimpse_size, input_channels=input_channels)
         # initialize our LSTM/RNN cell - hidden layers basically
         cell_size = 256
         self.cell = LSTMCell(cell_size) #LSTM(cell_size)
@@ -85,9 +87,9 @@ class RecurrentAttentionModel(Model):
             A 2-D float tensor of shape [batch_size, 256] which is the output of the Core Network.
         """
         # we start with initializing the location, state, glimpses if they are None
-        if self.loc is None:
-            self.loc = tf.random.uniform((x.shape[0], 2), minval=-1, maxval=1)
-            self.state = self.cell.get_initial_state(batch_size=x.shape[0], dtype=tf.float32)
+        #if self.loc is None:
+        self.loc = tf.random.uniform((x.shape[0], 2), minval=-1, maxval=1)
+        self.state = self.cell.get_initial_state(batch_size=x.shape[0], dtype=tf.float32)
         glimpse = self.glimpse_network(x, self.loc)
 
         # calculating the RNN outputs
@@ -95,6 +97,7 @@ class RecurrentAttentionModel(Model):
         for i in range(self.time_steps):
             # calculate output and state
             output, self.state = self.cell(inputs=glimpse, states=self.state)
+            #print(self.cell.variables)
             rnn_outputs.append(output)
 
             # calculating the next locations
@@ -218,14 +221,14 @@ class RecurrentAttentionModel(Model):
         return tf.reduce_sum(logll, 2) # [batch_sz, timesteps]
 
 
-class GlimpseNetwork():
+class GlimpseNetwork(tf.keras.layers.Layer):
     """
     The Glimpse Network f_g gets as input the image X and  the coordinates l_{t-1} of the centre. 
     It produces a vector representation which includes has information about the glimpse g_t (from 
     the Glimpse Sensor) and the location l_{t-1}. 
     """
     
-    def __init__(self, n_glimpses, glimpse_size):
+    def __init__(self, n_glimpses, glimpse_size, input_channels):
         """
         Parameters
         ----------
@@ -233,11 +236,14 @@ class GlimpseNetwork():
             This decides the amount of crops which will be returned
         glimpse_size : int
             This decides the size of the crops which will be returned
+        input_channels: int
+            The amount of channels in the input image
         """
+        super(GlimpseNetwork, self).__init__()
         self.n_glimpses = n_glimpses
         self.glimpse_size = glimpse_size
         
-        self.conv1_g = ConvLayer(128, self.glimpse_size, self.n_glimpses, "conv1_g")
+        self.conv1_g = ConvLayer(128, self.glimpse_size, self.n_glimpses * input_channels, "conv1_g")
         self.conv1_l = ConvLayer(128, 1, 2, "conv1_l")
         self.out = ConvLayer(256, 1, 128, "information_concatination")
         
@@ -273,6 +279,7 @@ class GlimpseNetwork():
         x = self.out(x_1 + x_2)
         x = tf.reshape(x, [batch_size, -1])
         return x
+
 
     def get_glimpses(self, image, loc, n_crops, crop_size):
         """
@@ -325,7 +332,7 @@ class GlimpseNetwork():
         glimpses = tf.concat(glimpses, axis=-1)
         return glimpses
     
-class LocationNetwork():
+class LocationNetwork(tf.keras.layers.Layer):
     """
     The Location Networks selects a the new location for the Glimpse Network. 
     It uses the internal state $h_t$ of the core network to produce the location coordinates l_t
@@ -344,6 +351,7 @@ class LocationNetwork():
         std : float
             Gaussian standard deviation for location network
         """
+        super(LocationNetwork, self).__init__()
         self.std = std
         self.conv_l = ConvLayer(2, 1, cell_size, "conv_location")
 
@@ -379,7 +387,7 @@ class LocationNetwork():
         return loc, mean
     
     
-class BaselineNetwork():
+class BaselineNetwork(tf.keras.layers.Layer):
     """
     The BaseLineNetwork is the baseline which is used in order to recude the variance of the gradient.
     This time of baseline is also known as the value function in the reinforce learning literatur.
@@ -392,6 +400,7 @@ class BaselineNetwork():
         cell_size : int
             The output dimension of the core network
         """
+        super(BaselineNetwork, self).__init__()
         self.conv_b = ConvLayer(1, 1, cell_size, "conv_baseline")
     
     @tf.function
@@ -410,7 +419,6 @@ class BaselineNetwork():
         b : tf.Tensor of type tf.float32
             A 2-D float tensor of shape [batch_size, 2]. The coordinates range from -1.0 to 1.0. 
         """
-        # the next location is computed by the location network
         core_output = tf.stop_gradient(cell_output, name="stop_gradient_in_baseline")
         batch_size, cell_size = core_output.shape
         b = tf.reshape(core_output, [batch_size, 1, 1, cell_size])
@@ -419,4 +427,3 @@ class BaselineNetwork():
         b = tf.squeeze(b)
         return b
   
-
