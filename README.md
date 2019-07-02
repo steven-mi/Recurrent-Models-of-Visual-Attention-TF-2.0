@@ -1,10 +1,17 @@
 # Recurrent-Models-of-Visual-Attention-TF-2.0
 This repository contains the a modified Recurrent Attention Model which was described in the Paper Recurrent Models of Visual Attention. 
-In order to run this code is it **recommended** to use the docker container of tensorflow 2.0.0a. Because `tensorflow-probability` doesn't support (from 17.04.19) tensorflow 2.0.0a, we need tf-nightly build. 
+In order to run this code is it **recommended** to use the docker container of tensorflow 2.0.0a because it includes all the needed drives etc. You need to install `tf-nightly` though because tensorflow 2.0.0a does not support tensorflow probabilty.
 
 ```bash
-pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly
+nvidia-docker run -it --rm -p 8888:8888 tensorflow/tensorflow:2.0.0a0-gpu-py3-jupyter bash
+pip install -r requirements.txt
+git clone git@git.tools.f4.htw-berlin.de:smi/recurrent-visual-attention-model.git
+
+cd recurrent-visual-attention-model
+jupyter notebook
 ```
+**Note:** If you do not have a GPU then you can remove the `gpu` tag and replace `nvidia-docker` with `docker`
+
 
 ## Requirements
 - [ray](http://ray.readthedocs.io)
