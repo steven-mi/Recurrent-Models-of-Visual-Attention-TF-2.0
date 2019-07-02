@@ -15,6 +15,7 @@ pip install --upgrade tf-nightly-gpu-2.0-preview tfp-nightly
 - instead of translating and adding clutter while runtime, data loaders were created where this process is done only once. 
   - has the disadvantage/advantage that the amount of different images is limited
   - it is possible to see that the RAM is possible to archive a good performance with limited data
+  - but you can create the dataset after each epoch to simulate the creation via runtime
 - instead of Dense layers/Fully Conneted layers, Convolution layers were used
 - in addition to the baseline model, batch norm was added to reduce variance
 - instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used
