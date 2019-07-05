@@ -21,12 +21,10 @@ jupyter notebook
 
 ## Modifications
 - instead of translating and adding clutter while runtime, data loaders were created where this process is done only once. 
-  - has the disadvantage/advantage that the amount of different images is limited
-  - it is possible to see that the RAM is possible to archive a good performance with limited data
-  - but you can create the dataset after each epoch to simulate the creation via runtime
+  - it is possible to test that the RAM is can archive a good performance with limited data
+  - but you can also create the dataset after each epoch to simulate the creation via runtime
 - instead of Dense layers/Fully Conneted layers, Convolution layers were used
 - in addition to the baseline model, batch norm was added to reduce variance
-- instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used
 - instead of random search, Bayessian Hyperparameter Optimization was used to tune the hyperparameter of the network (std and initial learning rate)
 
 ## Project Structure
@@ -38,6 +36,7 @@ jupyter notebook
 - `./` contains jupyter notebooks about how to use the dataloader, how to use the visualization scripts and how to train the model
 
 ## Results
+- instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used 
 | Dataset                            | Model                    | Hyperparameter                        | Epochs | Error |
 |------------------------------------|--------------------------|---------------------------------------|--------|-------|
 | MNIST                              | 1 8x8 Glimpse, 7 steps   | 0.25 STD, 0.001 LR, 1.0 max gradient  | 200    | 1.9%  |
