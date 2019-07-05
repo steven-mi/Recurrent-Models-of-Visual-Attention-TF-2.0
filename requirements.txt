@@ -1,3 +1,4 @@
+tensorflow-estimator-2.0-preview==1.14.0.dev2019050100
 bayesian-optimization==1.0.1
 matplotlib==3.0.3
 numpy==1.16.2
