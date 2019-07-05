@@ -1,7 +1,6 @@
 # Recurrent-Models-of-Visual-Attention-TF-2.0
 This repository contains the a modified Recurrent Attention Model which was described in the Paper Recurrent Models of Visual Attention. 
 
-## Project Structure
 - `bayesian_opt/` contains scripts for bayesian hyperparameter tuning on every dataset
 - `data/` contains scripts for loading data e.g. bach dataset loader, mnist, ...
 - `example/` contains notebooks on how to use all modules
