@@ -1,5 +1,23 @@
 # Recurrent-Models-of-Visual-Attention-TF-2.0
 This repository contains the a modified Recurrent Attention Model which was described in the Paper Recurrent Models of Visual Attention. 
+
+## Project Structure
+- `data/` contains scripts for loading data e.g. bach dataset loader, mnist, ...
+- `example/` contains notebooks on how to use all modules
+- `bayesian_opt/` contains scripts for bayesian hyperparameter tuning on every dataset
+- `model/` contains implementation of the whole model
+    - `ram.py` contains the implementation of the Recurrent Attention Model
+    - `layers.py` contains the implementation of the convolution layer (change this to try out other convolutions)
+- `visualizations/` contain scripts for visualizing the model and data
+- `./` contains jupyter notebooks about how to use the dataloader, how to use the visualization scripts and how to train the model
+
+## Requirements (everything will be installed with the requirement.txt)
+- [ray](http://ray.readthedocs.io)
+- [bayesian opt](https://github.com/fmfn/BayesianOptimization)
+- [tensorflow 2.0](https://www.tensorflow.org/versions/r2.0/api_docs/python/tf)
+- numpy, matplotlib, scikit-learn
+
+## Getting Started
 In order to run this code is it **recommended** to use the docker container of tensorflow 2.0.0a because it includes all the needed drives etc. You need to install `tf-nightly` though because tensorflow 2.0.0a does not support tensorflow probabilty.
 
 ```bash
@@ -13,12 +31,6 @@ jupyter notebook
 **Note:** If you do not have a GPU then you can remove the `gpu` tag and replace `nvidia-docker` with `docker`
 
 
-## Requirements
-- [ray](http://ray.readthedocs.io)
-- [bayesian opt](https://github.com/fmfn/BayesianOptimization)
-- [tensorflow 2.0](https://www.tensorflow.org/versions/r2.0/api_docs/python/tf)
-- numpy, matplotlib, scikit-learn
-
 ## Modifications
 - instead of translating and adding clutter while runtime, data loaders were created where this process is done only once. 
   - it is possible to test that the RAM is can archive a good performance with limited data
@@ -27,13 +39,7 @@ jupyter notebook
 - in addition to the baseline model, batch norm was added to reduce variance
 - instead of random search, Bayessian Hyperparameter Optimization was used to tune the hyperparameter of the network (std and initial learning rate)
 
-## Project Structure
-- `data/` contains scripts for loading data e.g. bach dataset loader, mnist, ...
-- `model/` contains implementation of the whole model
-    - `ram.py` contains the implementation of the Recurrent Attention Model
-    - `layers.py` contains the implementation of the convolution layer (change this to try out other convolutions)
-- `visualizations/` contain scripts for visualizing the model and data
-- `./` contains jupyter notebooks about how to use the dataloader, how to use the visualization scripts and how to train the model
+
 
 ## Results
 - instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used 
