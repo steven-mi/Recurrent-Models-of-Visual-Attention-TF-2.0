@@ -42,7 +42,8 @@ jupyter notebook
 
 
 ## Results
-- instead of SGD with Momentum and learning rate decay, a ADAM optimizer was used 
+**Note:** Every model was trained with ADAM optimizer instead of SGD with momentum
+
 | Dataset                            | Model                    | Hyperparameter                        | Epochs | Error |
 |------------------------------------|--------------------------|---------------------------------------|--------|-------|
 | MNIST                              | 1 8x8 Glimpse, 7 steps   | 0.25 STD, 0.001 LR, 1.0 max gradient  | 200    | 1.9%  |
