@@ -2,9 +2,9 @@
 This repository contains the a modified Recurrent Attention Model which was described in the Paper Recurrent Models of Visual Attention. 
 
 ## Project Structure
+- `bayesian_opt/` contains scripts for bayesian hyperparameter tuning on every dataset
 - `data/` contains scripts for loading data e.g. bach dataset loader, mnist, ...
 - `example/` contains notebooks on how to use all modules
-- `bayesian_opt/` contains scripts for bayesian hyperparameter tuning on every dataset
 - `model/` contains implementation of the whole model
     - `ram.py` contains the implementation of the Recurrent Attention Model
     - `layers.py` contains the implementation of the convolution layer (change this to try out other convolutions)
