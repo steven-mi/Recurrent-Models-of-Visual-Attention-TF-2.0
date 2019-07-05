@@ -15,6 +15,7 @@ jupyter notebook
 
 ## Requirements
 - [ray](http://ray.readthedocs.io)
+- [bayesian opt](https://github.com/fmfn/BayesianOptimization)
 - [tensorflow 2.0](https://www.tensorflow.org/versions/r2.0/api_docs/python/tf)
 - numpy, matplotlib, scikit-learn
 
