@@ -47,8 +47,7 @@ jupyter notebook
 |------------------------------------|--------------------------|---------------------------------------|--------|-------|
 | MNIST                              | 1 8x8 Glimpse, 7 steps   | 0.25 STD, 0.001 LR, 1.0 max gradient  | 200    | 1.9%  |
 | Transalted MNIST                   | 3 12x12 Glimpse, 8 steps | 0.05 STD, 0.0001 LR, 5.0 max gradient | 1000   | 2.83% |
-| Cluttered Translated MNIST 60x60   | 3 12x12 Glimpse, 8 steps | TODO                                  | TODO   | TODO  |
-| Cluttered Transalted MNIST 100x100 | 4 12x12 Glimpse, 8 steps | TODO                                  | TODO   | TODO  |
-
+| Cluttered Translated MNIST 60x60   | 3 12x12 Glimpse, 8 steps | 0.2 STD, 0.0001 LR, 1.0 max gradient  | 2000   | 12.35%|
+| Cluttered Transalted MNIST 100x100 | 4 12x12 Glimpse, 8 steps | 0.2 STD, 0.0001 LR, 1.0 max gradient  | 2000   | 24%   |
 ## Some Words
 The paper Recurrent Models of Visual Attention is 5 years and received since then a lot of modification. I think the REINFORCE algorithm still a interesting "cheat" or "trick" to optimize for non differentiable variables which is why I tried to implement and understand it. This implementation also has a very object oriented style, thus every class/module can be swapped out easily.
